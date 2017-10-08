@@ -14,6 +14,9 @@ namespace Lode
     class Program
     {
         static int[,] PoleHrac1 = new int[11, 11];
+        static int kolikatyRadek = 0;
+        
+        
         public static void Main(string[] args)
         {
 
@@ -28,8 +31,7 @@ namespace Lode
 
             int[,] PoleHrac2 = new int[11, 11];
             bool isTrue = true;
-            bool rightznak = true;
-            char[] pismenaPole = "ABCDEFGHIJ".ToCharArray();
+            
             String[] ZnakyPole = { "[A]", "[B]", "[C]", "[D]", "[E]", "[F]", "[G]", "[H]", "[I]", "[J]" };
             String[] CislaPole = { "[1] ", "[2] ", "[3] ", "[4] ", "[5] ", "[6] ", "[7] ", "[8] ", "[9] ", "[10]" };
 
@@ -77,28 +79,12 @@ namespace Lode
                     }
                     Console.WriteLine();
                 }
+
+
+                int uzRadek = KolikRadek();
                 Console.WriteLine("Zadejte řádek:");
-                int uzRadek = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Zadejte sloupec:");
-                while (rightznak)
-                {
-                    int hexcislo = 0;
-                    string input2 = Console.ReadLine().ToUpper();
-                    string hex = string.Join(string.Empty,
-                        input2.Select(c => ((int)c).ToString("X")).ToArray());
-                    hexcislo = int.Parse(hex);
-                    if (hexcislo > 40 && hexcislo < 50)
-                    {
-                        Console.WriteLine("Správně");
-                        Console.WriteLine(hex);
-                    }
-                    else
-                    {
-                        Console.WriteLine("megašpatne");
-                    }
-                }
                 int uzSloupec = Convert.ToInt32(Console.ReadLine());
-                PridejLod(2, uzRadek, uzSloupec);
+                PridejLod(2, uzSloupec, uzRadek);
                 Console.Clear();
             }
 
@@ -112,6 +98,37 @@ namespace Lode
                 PoleHrac1[radek, sloupec] = 1;
                 sloupec = sloupec + 1;
             }
+        }
+        public static int KolikRadek()
+        {
+            bool rightznak = true;
+            String[] pismenaPole = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+
+            while (rightznak)
+            {
+                Console.WriteLine("Zadejte sloupec:");
+                string uzRadek = Console.ReadLine().ToUpper();
+
+                if (pismenaPole.Contains(uzRadek))
+                {
+                    for (int i = 0; i <= 9; i++)
+                    {
+                        if (pismenaPole[i] == uzRadek)
+                        {
+                            kolikatyRadek = i+1;
+                            rightznak = false;
+                            break;
+
+                        }
+
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Špatný vstup!");
+                }
+            }
+            return kolikatyRadek;
         }
     }
 }
