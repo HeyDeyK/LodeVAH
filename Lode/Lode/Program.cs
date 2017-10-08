@@ -13,7 +13,7 @@ namespace Lode
 
     class Program
     {
-        static int[,] PoleHrac1 = new int[11, 11];
+        static int[,] PoleHrac1 = new int[12, 12];
         static int kolikatyRadek = 0;
         
         
@@ -29,7 +29,7 @@ namespace Lode
             more[2] = Typy.Prazdno;
             */
 
-            int[,] PoleHrac2 = new int[11, 11];
+            int[,] PoleHrac2 = new int[12, 12];
             bool isTrue = true;
             
             String[] ZnakyPole = { "[A]", "[B]", "[C]", "[D]", "[E]", "[F]", "[G]", "[H]", "[I]", "[J]" };
@@ -47,9 +47,9 @@ namespace Lode
             */
             while (isTrue)
             {
-                for (int i = 0; i < PoleHrac1.GetLength(0); i++)
+                for (int i = 0; i < PoleHrac1.GetLength(0)-1; i++)
                 {
-                    for (int f = 0; f < PoleHrac1.GetLength(1); f++)
+                    for (int f = 0; f < PoleHrac1.GetLength(1)-1; f++)
                     {
                         if (i == 0 && f > 0 && f < 11)
                         {
@@ -84,8 +84,75 @@ namespace Lode
                 int uzRadek = KolikRadek();
                 Console.WriteLine("Zadejte řádek:");
                 int uzSloupec = Convert.ToInt32(Console.ReadLine());
-                PridejLod(2, uzSloupec, uzRadek);
-                Console.Clear();
+                int povoleno = 0;
+                int overeni1 = uzRadek - 1;
+                int overeni2 = uzRadek - 1;
+                int overeni3 = uzRadek - 1;
+                if(uzRadek==10)
+                {
+                    povoleno = 1;
+                }
+                else
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Console.WriteLine("NEW LINE:");
+                        Console.WriteLine(uzSloupec - 1 + ";" + overeni1);
+
+                        Console.WriteLine(uzSloupec + ";" + overeni2);
+                        Console.WriteLine(uzSloupec + 1 + ";" + overeni3);
+                        if (PoleHrac1[uzSloupec - 1, overeni1] == 0)
+                        {
+                            overeni1++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Chyba!!");
+                            povoleno = 1;
+                            break;
+                        }
+                        if (PoleHrac1[uzSloupec, overeni2] == 0)
+                        {
+                            overeni2++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Chyba!!");
+                            povoleno = 1;
+                            break;
+                        }
+                        if (PoleHrac1[uzSloupec + 1, overeni3] == 0)
+                        {
+                            overeni3++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Chyba!!");
+                            povoleno = 1;
+                            break;
+                        }
+
+                    }
+                }
+                
+                
+                if(PoleHrac1[5,5]==1)
+                {
+                    Console.WriteLine("ALOHA");
+                }
+                
+                if (povoleno == 1)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("      !!Sem nelze loď umístit!!");
+                    Console.WriteLine("");
+                }
+                else
+                {
+                    PridejLod(2, uzSloupec, uzRadek);
+                    //Console.Clear();
+                }
+                
             }
 
             Console.ReadLine();
