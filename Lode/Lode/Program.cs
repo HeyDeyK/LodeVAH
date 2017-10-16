@@ -8,7 +8,7 @@ namespace Lode
 {
     enum Typy
     {
-        Prazdno, Lod,Trefa,Vedle
+        Prazdno, Lod, Trefa, Vedle
     }
 
     class Program
@@ -34,7 +34,7 @@ namespace Lode
             more[1] = Typy.Trefa;
             more[2] = Typy.Prazdno;
             */
-            
+
             bool isTrue = true;
             bool celyProgram = true;
             bool isTrueHra = true;
@@ -47,7 +47,11 @@ namespace Lode
             int zasah = 1;
             int ctrZasah1 = 0;
             int ctrZasah2 = 0;
-
+            int[] utokSipek = { 1, 1 };
+            int[] vyberSipek = { 1, 1 };
+            int hrajeZnovu = 0;
+            string status = "";
+            string status2 = "";
 
 
 
@@ -56,17 +60,17 @@ namespace Lode
                 Console.Clear();
                 int moznost = Menu();
                 Console.Clear();
-                if (moznost==0)
+                if (moznost == 0)
                 {
                     while (isTrue)
                     {
-                        if (pocetLodi == 6 && pocetUlozenych == 1)
+                        if (pocetLodi == 7 && pocetUlozenych == 1)
                         {
                             Array.Copy(PoleHrac1, 0, FinHrac2, 0, PoleHrac1.Length);
                             Array.Clear(PoleHrac1, 0, PoleHrac1.Length);
                             break;
                         }
-                        else if (pocetLodi == 6 && pocetUlozenych == 0)
+                        else if (pocetLodi == 7 && pocetUlozenych == 0)
                         {
                             Array.Copy(PoleHrac1, 0, FinHrac1, 0, PoleHrac1.Length);
                             Array.Clear(PoleHrac1, 0, PoleHrac1.Length);
@@ -76,106 +80,73 @@ namespace Lode
                             Console.WriteLine("Nyní ukládá lodě hráč číslo 2\n");
                         }
 
-                        for (int i = 0; i < PoleHrac1.GetLength(0) - 1; i++)
-                        {
-                            for (int f = 0; f < PoleHrac1.GetLength(1) - 1; f++)
-                            {
-                                if (i == 0 && f > 0 && f < 11)
-                                {
-                                    Console.Write(ZnakyPole[f - 1]);
-                                }
-                                else if (f == 0 && i > 0 && i < 11)
-                                {
-                                    Console.Write(CislaPole[i - 1]);
-                                }
-                                else if (i == 0 && f == 0)
-                                {
-                                    Console.Write("[ ] ");
-                                }
-                                else
-                                {
-                                    //Console.Write(PoleHrac1[i, f]);
-                                    if (PoleHrac1[i, f] == (int)Typy.Prazdno)
-                                    {
-                                        Console.Write("[ ]");
-                                    }
-                                    else
-                                    {
-                                        Console.Write("[■]");
-                                    }
-                                }
 
-                            }
-                            Console.WriteLine();
-                        }
-
-                        if (pocetLodi < 3)
+                        if (pocetLodi == 0)
                         {
-                            Console.WriteLine("\nUmístěte loď o velikosti dvou políček\n");
+                            status2 = "Umístěte loď o velikosti tří políček\n";
                         }
-                        else
+                        else if (pocetLodi < 4 && pocetLodi > 0)
                         {
-                            Console.WriteLine("\nUmístěte loď o velikosti jednoho políčka:\n");
+                            status2 = "Umístěte loď o velikosti dvou políček\n";
                             velikostLode = 1;
                         }
-
-                        int uzRadek = KolikRadek();
-
-                        int uzSloupec = KolikSloupec();
-                        int overeni1 = uzRadek - 1;
-                        int overeni2 = uzRadek - 1;
-                        int overeni3 = uzRadek - 1;
-                        if ((uzRadek == 10 && velikostLode == 0) || uzSloupec > 10)
-                        {
-                            povoleno = 1;
-                        }
                         else
                         {
-                            for (int i = 0; i < 4 - velikostLode; i++)
+                            status2 = "Umístěte loď o velikosti jednoho políčka:\n";
+                            velikostLode = 2;
+                        }
+                        vyberSipek = SipkyUlozeni(PoleHrac1, ZnakyPole, CislaPole, velikostLode, status, status2);
+                        int uzSloupec = vyberSipek[1];
+
+                        int uzRadek = vyberSipek[0];
+                        int overeni1 = uzSloupec - 1;
+                        int overeni2 = uzSloupec - 1;
+                        int overeni3 = uzSloupec - 1;
+                        for (int i = 0; i < 4 - velikostLode; i++)
+                        {
+
+                            if (PoleHrac1[uzRadek - 1, overeni1] == 0)
                             {
-
-                                if (PoleHrac1[uzSloupec - 1, overeni1] == 0)
-                                {
-                                    overeni1++;
-                                }
-                                else
-                                {
-                                    povoleno = 1;
-                                    break;
-                                }
-                                if (PoleHrac1[uzSloupec, overeni2] == 0)
-                                {
-                                    overeni2++;
-                                }
-                                else
-                                {
-                                    povoleno = 1;
-                                    break;
-                                }
-                                if (PoleHrac1[uzSloupec + 1, overeni3] == 0)
-                                {
-                                    overeni3++;
-                                }
-                                else
-                                {
-                                    povoleno = 1;
-                                    break;
-                                }
-
+                                overeni1++;
                             }
+                            else
+                            {
+                                povoleno = 1;
+                                break;
+                            }
+                            if (PoleHrac1[uzRadek, overeni2] == 0)
+                            {
+                                overeni2++;
+                            }
+                            else
+                            {
+                                povoleno = 1;
+                                break;
+                            }
+                            if (PoleHrac1[uzRadek + 1, overeni3] == 0)
+                            {
+                                overeni3++;
+                            }
+                            else
+                            {
+                                povoleno = 1;
+                                break;
+                            }
+
                         }
 
 
                         if (povoleno == 1)
                         {
                             Console.Clear();
-                            Console.WriteLine("      !!Sem nelze loď umístit!!\n");
+                            status = "      !!Sem nelze loď umístit!!\n";
                             povoleno = 0;
                         }
                         else
                         {
-                            PridejLod(2, uzSloupec, uzRadek, velikostLode);
+                            PridejLod(3, uzRadek, uzSloupec, velikostLode);
                             pocetLodi++;
+                            status = "";
                             Console.Clear();
                         }
 
@@ -183,47 +154,36 @@ namespace Lode
 
                     while (isTrueHra)
                     {
-                        
-                        Console.Clear();
-                        Console.WriteLine(posledniTah);
 
-                        if (aktHrac == 0)
-                        {
-                            Array.Clear(PoleHrac1, 0, PoleHrac1.Length);
-                            Array.Copy(FinHrac2, 0, PoleHrac1, 0, FinHrac2.Length);
-                            Console.WriteLine("Nyní útočí hráč číslo 1\n");
-                        }
-                        else
-                        {
-                            Array.Clear(PoleHrac1, 0, PoleHrac1.Length);
-                            Array.Copy(FinHrac1, 0, PoleHrac1, 0, FinHrac1.Length);
-                            Console.WriteLine("Nyní útočí hráč číslo 2\n");
-                        }
-                        VypisPole(PoleHrac1, ZnakyPole, CislaPole);
-                        int uzRadek = KolikRadek();
-                        int uzSloupec = KolikSloupec();
-                        if (PoleHrac1[uzSloupec, uzRadek] == (int)Typy.Trefa || PoleHrac1[uzSloupec, uzRadek] == (int)Typy.Vedle)
+                        Console.Clear();
+
+                        utokSipek = SipkyVyber(PoleHrac1, ZnakyPole, CislaPole, posledniTah, aktHrac);
+                        int uzSloupec = utokSipek[1];
+                        int uzRadek = utokSipek[0];
+                        if (PoleHrac1[uzRadek, uzSloupec] == (int)Typy.Trefa || PoleHrac1[uzRadek, uzSloupec] == (int)Typy.Vedle)
                         {
                             posledniTah = "Na toto pole jste již střílel!\n";
                         }
                         else
                         {
-                            if (PoleHrac1[uzSloupec, uzRadek] == (int)Typy.Prazdno)
+                            if (PoleHrac1[uzRadek, uzSloupec] == (int)Typy.Prazdno)
                             {
-                                PoleHrac1[uzSloupec, uzRadek] = (int)Typy.Vedle;
+                                PoleHrac1[uzRadek, uzSloupec] = (int)Typy.Vedle;
                                 posledniTah = "Vedle!\n";
                             }
-                            else if (PoleHrac1[uzSloupec, uzRadek] == (int)Typy.Lod)
+                            else if (PoleHrac1[uzRadek, uzSloupec] == (int)Typy.Lod)
                             {
-                                PoleHrac1[uzSloupec, uzRadek] = (int)Typy.Trefa;
+                                hrajeZnovu = 1;
+                                PoleHrac1[uzRadek, uzSloupec] = (int)Typy.Trefa;
                                 zasah = 1;
+                                int overeni1 = uzSloupec - 1;
+                                int overeni2 = uzSloupec - 1;
+                                int overeni3 = uzSloupec - 1;
                                 for (int i = 0; i < 3; i++)
                                 {
-                                    int overeni1 = uzRadek - 1;
-                                    int overeni2 = uzRadek - 1;
-                                    int overeni3 = uzRadek - 1;
 
-                                    if (PoleHrac1[uzSloupec - 1, overeni1] == 0)
+
+                                    if (PoleHrac1[uzRadek - 1, overeni1] != 1)
                                     {
                                         overeni1++;
                                     }
@@ -232,7 +192,7 @@ namespace Lode
                                         potopena = 1;
                                         break;
                                     }
-                                    if (PoleHrac1[uzSloupec, overeni2] == 0)
+                                    if (PoleHrac1[uzRadek, overeni2] != 1)
                                     {
                                         overeni2++;
                                     }
@@ -241,26 +201,78 @@ namespace Lode
                                         potopena = 1;
                                         break;
                                     }
-                                    if (PoleHrac1[uzSloupec + 1, overeni3] == 0)
+                                    if (PoleHrac1[uzRadek + 1, overeni3] != 1)
                                     {
                                         overeni3++;
                                     }
                                     else
                                     {
                                         potopena = 1;
+
                                         break;
                                     }
 
                                 }
                                 if (potopena == 1)
                                 {
-                                    posledniTah = "Loď potopena!\n";
+
+                                    posledniTah = "Trefa!\n";
 
                                 }
                                 else
                                 {
-                                    posledniTah = "Trefa!\n";
+                                    posledniTah = "Loď potopena!\n";
+                                    /*int overeni1 = uzSloupec - 1;
+                                    int overeni2 = uzSloupec - 1;
+                                    int overeni3 = uzSloupec - 1;
+                                    for (int i = 0; i < 3; i++)
+                                    {
+                                        
+
+                                        if (PoleHrac1[uzRadek - 1, overeni1] != 1)
+                                        {
+                                            Console.WriteLine(uzRadek - 1 + "" + overeni1);
+                                            overeni1++;
+                                            
+                                        }
+                                        else
+                                        {
+                                            potopena = 1;
+                                            break;
+                                        }
+                                        if (PoleHrac1[uzRadek, overeni2] != 1)
+                                        {
+                                            Console.WriteLine(uzRadek + "" + overeni2);
+                                            overeni2++;
+                                            
+                                        }
+                                        else
+                                        {
+                                            potopena = 1;
+                                            break;
+                                        }
+                                        if (PoleHrac1[uzRadek + 1, overeni3] != 1)
+                                        {
+                                            Console.WriteLine(uzRadek + 1 + "" + overeni3);
+                                            overeni3++;
+                                            
+                                        }
+                                        else
+                                        {
+                                            potopena = 1;
+
+                                            break;
+                                        }
+
+                                    }
+                                    if(potopena==1)
+                                    {
+                                        Console.WriteLine("jdi od pic");
+                                    }
+                                    Console.ReadLine();*/
+
                                 }
+                                potopena = 0;
                             }
 
 
@@ -268,13 +280,21 @@ namespace Lode
                             if (aktHrac == 0)
                             {
                                 Array.Copy(PoleHrac1, 0, FinHrac2, 0, PoleHrac1.Length);
-                                aktHrac = 1;
+
+                                if (hrajeZnovu == 1)
+                                {
+
+                                }
+                                else
+                                {
+                                    aktHrac = 1;
+                                }
                                 if (zasah == 1)
                                 {
                                     ctrZasah1++;
                                     zasah = 0;
                                 }
-                                if (ctrZasah1 == 9)
+                                if (ctrZasah1 == 12)
                                 {
                                     Console.WriteLine("GRATULUJEME vyhrál hráč číslo jedna!!!");
                                     break;
@@ -283,26 +303,34 @@ namespace Lode
                             else
                             {
                                 Array.Copy(PoleHrac1, 0, FinHrac1, 0, PoleHrac1.Length);
-                                aktHrac = 0;
+                                if (hrajeZnovu == 1)
+                                {
+
+                                }
+                                else
+                                {
+                                    aktHrac = 0;
+                                }
                                 if (zasah == 1)
                                 {
                                     ctrZasah2++;
                                     zasah = 0;
                                 }
-                                if (ctrZasah2 == 9)
+                                if (ctrZasah2 == 12)
                                 {
                                     Console.WriteLine("GRATULUJEME vyhrál hráč číslo dva!!!");
                                     break;
                                 }
                             }
+                            hrajeZnovu = 0;
                         }
-                        
+
 
                     }
                     Console.WriteLine("Stiskněte klávesu pro návrat do menu.");
                     Console.ReadLine();
                 }
-                else if(moznost==1)
+                else if (moznost == 1)
                 {
                     Console.Clear();
                     Console.WriteLine("Na začátku hry si oba dva hráčí uloží lodě do svého pole.");
@@ -316,16 +344,16 @@ namespace Lode
                     Console.WriteLine("[X] <- zasažená loď");
                     Console.ReadLine();
                 }
-                else if(moznost==2)
+                else if (moznost == 2)
                 {
                     Console.Beep();
                     Environment.Exit(0);
                 }
             }
-            
+
         }
 
-        public static void VypisPole(int [,] PoleHrac1 ,string [] ZnakyPole, string[] CislaPole)
+        public static void VypisPole(int[,] PoleHrac1, string[] ZnakyPole, string[] CislaPole)
         {
             for (int i = 0; i < PoleHrac1.GetLength(0) - 1; i++)
             {
@@ -364,16 +392,16 @@ namespace Lode
                 Console.WriteLine();
             }
         }
-        public static void PridejLod(int x, int radek, int sloupec,int velikost)
+        public static void PridejLod(int x, int radek, int sloupec, int velikost)
         {
 
-            for (int i = 0; i < x-velikost; i++)
+            for (int i = 0; i < x - velikost; i++)
             {
                 PoleHrac1[radek, sloupec] = 1;
                 sloupec = sloupec + 1;
             }
         }
-        public static int KolikRadek()
+        public static int FunSloupec()
         {
             bool rightznak = true;
             String[] pismenaPole = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
@@ -381,15 +409,15 @@ namespace Lode
             while (rightznak)
             {
                 Console.WriteLine("Zadejte sloupec:");
-                string uzRadek = Console.ReadLine().ToUpper();
+                string uzSloupec = Console.ReadLine().ToUpper();
 
-                if (pismenaPole.Contains(uzRadek))
+                if (pismenaPole.Contains(uzSloupec))
                 {
                     for (int i = 0; i <= 9; i++)
                     {
-                        if (pismenaPole[i] == uzRadek)
+                        if (pismenaPole[i] == uzSloupec)
                         {
-                            kolikatyRadek = i+1;
+                            kolikatyRadek = i + 1;
                             rightznak = false;
                             break;
 
@@ -404,20 +432,20 @@ namespace Lode
             }
             return kolikatyRadek;
         }
-        public static int KolikSloupec()
+        public static int FunRadek()
         {
             bool rightznak = true;
             int zadRadek = 0;
-            while(rightznak)
+            while (rightznak)
             {
                 Console.WriteLine("Zadejte řádek:");
                 string Radek = Console.ReadLine();
                 bool allDigits = Radek.All(char.IsDigit);
-                if(allDigits && Radek !="")
+                if (allDigits && Radek != "")
                 {
-                    
+
                     zadRadek = Convert.ToInt32(Radek);
-                    if(zadRadek>0 && zadRadek<11)
+                    if (zadRadek > 0 && zadRadek < 11)
                     {
                         break;
                     }
@@ -438,16 +466,16 @@ namespace Lode
         {
             bool isTrue = true;
             int moznost = 0;
-            
-            while(isTrue)
+
+            while (isTrue)
             {
-                if(moznost==0)
+                if (moznost == 0)
                 {
                     Console.WriteLine("> Nová hra");
                     Console.WriteLine("Nápověda");
                     Console.WriteLine("Konec");
                 }
-                else if(moznost==1)
+                else if (moznost == 1)
                 {
                     Console.WriteLine("Nová hra");
                     Console.WriteLine("> Nápověda");
@@ -460,27 +488,287 @@ namespace Lode
                     Console.WriteLine("> Konec");
                 }
                 string name = Console.ReadKey().Key.ToString();
-                if(name=="UpArrow")
+                if (name == "UpArrow")
                 {
                     if (moznost > 0)
                     {
                         moznost = moznost - 1;
                     }
                 }
-                else if(name=="DownArrow")
+                else if (name == "DownArrow")
                 {
                     if (moznost >= 0 && moznost < 2)
                     {
                         moznost++;
                     }
                 }
-                else if(name=="Enter")
+                else if (name == "Enter")
                 {
                     break;
                 }
                 Console.Clear();
             }
             return moznost;
+        }
+        public static int[] SipkyVyber(int[,] PoleHrac1, string[] ZnakyPole, string[] CislaPole, string posledniTah, int aktHrac)
+        {
+            bool isTrue = true;
+            int historie = 0;
+
+            int VyberRadek = 1;
+            int VyberSloupec = 1;
+            while (isTrue)
+            {
+                Console.Clear();
+
+
+
+                if (aktHrac == 0)
+                {
+                    Array.Clear(PoleHrac1, 0, PoleHrac1.Length);
+                    Array.Copy(FinHrac2, 0, PoleHrac1, 0, FinHrac2.Length);
+                    Console.WriteLine("Pole hráče číslo 2:\n");
+                }
+                else
+                {
+                    Array.Clear(PoleHrac1, 0, PoleHrac1.Length);
+                    Array.Copy(FinHrac1, 0, PoleHrac1, 0, FinHrac1.Length);
+                    Console.WriteLine("Pole hráče číslo 1:\n");
+                }
+                historie = PoleHrac1[VyberRadek, VyberSloupec];
+                PoleHrac1[VyberRadek, VyberSloupec] = 5;
+                for (int i = 0; i < PoleHrac1.GetLength(0) - 1; i++)
+                {
+                    for (int f = 0; f < PoleHrac1.GetLength(1) - 1; f++)
+                    {
+                        if (i == 0 && f > 0 && f < 11)
+                        {
+                            Console.Write(ZnakyPole[f - 1]);
+                        }
+                        else if (f == 0 && i > 0 && i < 11)
+                        {
+                            Console.Write(CislaPole[i - 1]);
+                        }
+                        else if (i == 0 && f == 0)
+                        {
+                            Console.Write("[ ] ");
+                        }
+                        else
+                        {
+
+                            if ((PoleHrac1[i, f] == (int)Typy.Prazdno) || (PoleHrac1[i, f] == (int)Typy.Lod))
+                            {
+                                Console.Write("[ ]");
+                            }
+                            else if (PoleHrac1[i, f] == (int)Typy.Vedle)
+                            {
+                                Console.Write("[O]");
+                            }
+                            else if (PoleHrac1[i, f] == (int)Typy.Trefa)
+                            {
+                                Console.Write("[X]");
+                            }
+                            else if (PoleHrac1[i, f] == 5)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write("[+]");
+                                Console.ResetColor();
+                            }
+                        }
+
+                    }
+                    Console.WriteLine();
+                }
+                PoleHrac1[VyberRadek, VyberSloupec] = historie;
+                if (aktHrac == 0)
+                {
+                    Console.WriteLine("\nPole hráče číslo 1:\n");
+                    VypisPole(FinHrac1, ZnakyPole, CislaPole);
+                }
+                else
+                {
+                    Console.WriteLine("\nPole hráče číslo 2:\n");
+                    VypisPole(FinHrac2, ZnakyPole, CislaPole);
+                }
+
+                if (posledniTah == "")
+                {
+
+                }
+                else
+                {
+                    Console.WriteLine("\n" + posledniTah);
+                }
+                string name = Console.ReadKey().Key.ToString();
+
+                if (name == "UpArrow")
+                {
+                    if (VyberRadek > 1)
+                    {
+                        VyberRadek--;
+                    }
+                }
+                else if (name == "DownArrow")
+                {
+                    if (VyberRadek < 10)
+                    {
+                        VyberRadek++;
+                    }
+                }
+                else if (name == "LeftArrow")
+                {
+                    if (VyberSloupec > 1)
+                    {
+                        VyberSloupec--;
+                    }
+                }
+                else if (name == "RightArrow")
+                {
+                    if (VyberSloupec < 10)
+                    {
+                        VyberSloupec++;
+                    }
+                }
+                else if (name == "Enter")
+                {
+                    break;
+                }
+            }
+            int[] VyberLode = { VyberRadek, VyberSloupec };
+            return VyberLode;
+        }
+        public static int[] SipkyUlozeni(int[,] PoleHrac1, string[] ZnakyPole, string[] CislaPole, int velikost, string status, string status2)
+        {
+            bool isTrue = true;
+            int historie = 0;
+            int historie2 = 0;
+            int historie3 = 0;
+            int VyberRadek = 1;
+            int VyberSloupec = 1;
+            while (isTrue)
+            {
+                Console.Clear();
+                if (status != "")
+                {
+                    Console.WriteLine(status);
+                }
+                Console.WriteLine(status2);
+
+                if (velikost == 0)
+                {
+                    historie = PoleHrac1[VyberRadek, VyberSloupec];
+                    historie2 = PoleHrac1[VyberRadek, VyberSloupec + 1];
+                    historie3 = PoleHrac1[VyberRadek, VyberSloupec + 2];
+                    PoleHrac1[VyberRadek, VyberSloupec] = 5;
+                    PoleHrac1[VyberRadek, VyberSloupec + 1] = 5;
+                    PoleHrac1[VyberRadek, VyberSloupec + 2] = 5;
+                }
+                else if (velikost == 1)
+                {
+                    historie = PoleHrac1[VyberRadek, VyberSloupec];
+                    historie2 = PoleHrac1[VyberRadek, VyberSloupec + 1];
+                    PoleHrac1[VyberRadek, VyberSloupec] = 5;
+                    PoleHrac1[VyberRadek, VyberSloupec + 1] = 5;
+                }
+                else
+                {
+                    historie = PoleHrac1[VyberRadek, VyberSloupec];
+                    PoleHrac1[VyberRadek, VyberSloupec] = 5;
+                }
+
+                for (int i = 0; i < PoleHrac1.GetLength(0) - 1; i++)
+                {
+                    for (int f = 0; f < PoleHrac1.GetLength(1) - 1; f++)
+                    {
+                        if (i == 0 && f > 0 && f < 11)
+                        {
+                            Console.Write(ZnakyPole[f - 1]);
+                        }
+                        else if (f == 0 && i > 0 && i < 11)
+                        {
+                            Console.Write(CislaPole[i - 1]);
+                        }
+                        else if (i == 0 && f == 0)
+                        {
+                            Console.Write("[ ] ");
+                        }
+                        else
+                        {
+                            //Console.Write(PoleHrac1[i, f]);
+                            if (PoleHrac1[i, f] == (int)Typy.Prazdno)
+                            {
+                                Console.Write("[ ]");
+                            }
+                            else if (PoleHrac1[i, f] == 5)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write("[■]");
+                                Console.ResetColor();
+                            }
+                            else
+                            {
+                                Console.Write("[■]");
+                            }
+                        }
+
+                    }
+                    Console.WriteLine();
+                }
+
+
+                if (velikost == 0)
+                {
+                    PoleHrac1[VyberRadek, VyberSloupec] = historie;
+                    PoleHrac1[VyberRadek, VyberSloupec + 1] = historie2;
+                    PoleHrac1[VyberRadek, VyberSloupec + 2] = historie3;
+                }
+                else if (velikost == 1)
+                {
+                    PoleHrac1[VyberRadek, VyberSloupec] = historie;
+                    PoleHrac1[VyberRadek, VyberSloupec + 1] = historie2;
+                }
+                else
+                {
+                    PoleHrac1[VyberRadek, VyberSloupec] = historie;
+                }
+
+                string name = Console.ReadKey().Key.ToString();
+
+                if (name == "UpArrow")
+                {
+                    if (VyberRadek > 1)
+                    {
+                        VyberRadek--;
+                    }
+                }
+                else if (name == "DownArrow")
+                {
+                    if (VyberRadek < 10)
+                    {
+                        VyberRadek++;
+                    }
+                }
+                else if (name == "LeftArrow ")
+                {
+                    if (VyberSloupec > 1)
+                    {
+                        VyberSloupec--;
+                    }
+                }
+                else if (name == "RightArrow")
+                {
+                    if (VyberSloupec < 8 + velikost)
+                    {
+                        VyberSloupec++;
+                    }
+                }
+                else if (name == "Enter")
+                {
+                    break;
+                }
+            }
+            int[] VyberLode = { VyberRadek, VyberSloupec };
+            return VyberLode;
         }
     }
 }
